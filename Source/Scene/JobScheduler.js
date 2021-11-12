@@ -39,7 +39,7 @@ function JobTypeBudget(total) {
 
 Object.defineProperties(JobTypeBudget.prototype, {
   total: {
-    get: function () {
+    get: function() {
       return this._total;
     },
   },
@@ -110,18 +110,18 @@ JobScheduler.getTimestamp = getTimestamp;
 
 Object.defineProperties(JobScheduler.prototype, {
   totalBudget: {
-    get: function () {
+    get: function() {
       return this._totalBudget;
     },
   },
 });
 
-JobScheduler.prototype.disableThisFrame = function () {
+JobScheduler.prototype.disableThisFrame = function() {
   // Prevent jobs from running this frame
   this._totalUsedThisFrame = this._totalBudget;
 };
 
-JobScheduler.prototype.resetBudgets = function () {
+JobScheduler.prototype.resetBudgets = function() {
   var budgets = this._budgets;
   var length = budgets.length;
   for (var i = 0; i < length; ++i) {
@@ -134,7 +134,7 @@ JobScheduler.prototype.resetBudgets = function () {
   this._totalUsedThisFrame = 0.0;
 };
 
-JobScheduler.prototype.execute = function (job, jobType) {
+JobScheduler.prototype.execute = function(job, jobType) {
   var budgets = this._budgets;
   var budget = budgets[jobType];
 
@@ -159,7 +159,7 @@ JobScheduler.prototype.execute = function (job, jobType) {
       // Steal from this budget if it has time left and it wasn't starved last fame
       if (
         stolenBudget.usedThisFrame + stolenBudget.stolenFromMeThisFrame <
-          stolenBudget.total &&
+        stolenBudget.total &&
         !stolenBudget.starvedLastFrame
       ) {
         break;
