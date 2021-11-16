@@ -6,6 +6,10 @@ import DeveloperError from "./DeveloperError.js";
  * to several events, then removing all those listeners at once later, for example, in
  * a destroy method.
  *
+ * 一个方便的对象，简化了向多个事件附加监听器的通用模式，
+ * 然后之后一次性删除所有监听器，
+ * 例如，在销毁函数里。
+ *
  * @alias EventHelper
  * @constructor
  *

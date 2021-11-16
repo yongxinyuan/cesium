@@ -264,6 +264,8 @@ EntityCollection.prototype.computeAvailability = function () {
 /**
  * Add an entity to the collection.
  *
+ * 将实体添加到集合。
+ *
  * @param {Entity | Entity.ConstructorOptions} entity The entity to be added.
  * @returns {Entity} The entity that was added.
  * @exception {DeveloperError} An entity with <entity.id> already exists in this collection.
@@ -275,12 +277,15 @@ EntityCollection.prototype.add = function (entity) {
   }
   //>>includeEnd('debug');
 
+  // 确保 entity 是实体类
   if (!(entity instanceof Entity)) {
     entity = new Entity(entity);
   }
 
   var id = entity.id;
   var entities = this._entities;
+
+  // 检查 id 重复
   if (entities.contains(id)) {
     throw new RuntimeError(
       "An entity with id " + id + " already exists in this collection."

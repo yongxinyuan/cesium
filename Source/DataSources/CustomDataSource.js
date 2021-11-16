@@ -8,6 +8,8 @@ import EntityCollection from "./EntityCollection.js";
 /**
  * A {@link DataSource} implementation which can be used to manually manage a group of entities.
  *
+ * 一个 DataSource 实现，可以用来手动管理一组实体。
+ *
  * @alias CustomDataSource
  * @constructor
  *

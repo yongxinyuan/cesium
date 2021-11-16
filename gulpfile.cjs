@@ -183,8 +183,15 @@ function createWorkers() {
     });
 }
 
+/**
+ * 构建三方资源
+ *
+ * @returns
+ */
 async function buildThirdParty() {
+  // 强制删除 `Build/createWorkers`
   rimraf.sync("Build/createWorkers");
+
   globby.sync(filesToLeaveInThirdParty).forEach(function (file) {
     rimraf.sync(file);
   });
@@ -218,8 +225,10 @@ async function buildThirdParty() {
 }
 
 gulp.task("build", async function () {
+  // 创建 Build 文件夹
   mkdirp.sync("Build");
 
+  // 创建 `package.json` 文件
   fs.writeFileSync(
     "Build/package.json",
     JSON.stringify({
@@ -228,6 +237,7 @@ gulp.task("build", async function () {
     "utf8"
   );
 
+  // 构建三方部分
   await buildThirdParty();
   glslToJavaScript(minifyShaders, "Build/minifyShaders.state");
   createCesiumJs();

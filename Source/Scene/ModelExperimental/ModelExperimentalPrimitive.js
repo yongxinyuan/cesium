@@ -18,9 +18,13 @@ import VertexAttributeSemantic from "../VertexAttributeSemantic.js";
  * In memory representation of a single primitive, that is, a primitive
  * and its corresponding mesh.
  *
+ * 在内存中表示单一图元，即一个图元和对应的网格。
+ *
  * @param {Object} options An object containing the following options:
  * @param {ModelComponents.Primitive} options.primitive The primitive component.
- * @param {ModelExperimental} options.model The {@link ModelExperimental} this primitive belongs to.
+ * @param {ModelExperimental} options.model
+ * The {@link ModelExperimental} this primitive belongs to.
+ * 这个图元属于哪个 `ModelExperimental`
  *
  * @alias ModelExperimentalPrimitive
  * @constructor

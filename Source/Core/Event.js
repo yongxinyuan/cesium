@@ -6,6 +6,10 @@ import defined from "./defined.js";
  * This class is usually instantiated inside of a container class and
  * exposed as a property for others to subscribe to.
  *
+ * 一个通用的工具类，用来管理一个特定事件的订阅者。
+ * 这个类通常在一个类内部实例化，
+ * 作为一个属性暴露给其他类用来订阅。
+ *
  * @alias Event
  * @constructor
  * @example
@@ -30,6 +34,9 @@ function Event() {
 Object.defineProperties(Event.prototype, {
   /**
    * The number of listeners currently subscribed to the event.
+   *
+   * 事件当前订阅的监听器的数量
+   *
    * @memberof Event.prototype
    * @type {Number}
    * @readonly

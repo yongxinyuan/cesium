@@ -22,6 +22,9 @@ import PolylineVisualizer from "./PolylineVisualizer.js";
 
 /**
  * Visualizes a collection of {@link DataSource} instances.
+ *
+ * 可视化一个 DataSource 实例集合，Viewer 中实例化。
+ *
  * @alias DataSourceDisplay
  * @constructor
  *
@@ -49,21 +52,25 @@ function DataSourceDisplay(options) {
   var dataSourceCollection = options.dataSourceCollection;
 
   this._eventHelper = new EventHelper();
+  // 向 Viewer.dataSourceCollection 成功添加元素事件
   this._eventHelper.add(
     dataSourceCollection.dataSourceAdded,
     this._onDataSourceAdded,
     this
   );
+  // 从 Viewer.dataSourceCollection 删除元素事件
   this._eventHelper.add(
     dataSourceCollection.dataSourceRemoved,
     this._onDataSourceRemoved,
     this
   );
+  // Viewer.dataSourceCollection 移动事件
   this._eventHelper.add(
     dataSourceCollection.dataSourceMoved,
     this._onDataSourceMoved,
     this
   );
+  // 场景后期渲染事件
   this._eventHelper.add(scene.postRender, this._postRender, this);
 
   this._dataSourceCollection = dataSourceCollection;
@@ -77,6 +84,14 @@ function DataSourceDisplay(options) {
   var primitives = new PrimitiveCollection();
   var groundPrimitives = new PrimitiveCollection();
 
+  // Scene.primitives -> new PrimitiveCollection
+  // Scene.groundPrimitives -> new PrimitiveCollection
+
+  // DataSourceDisplay.primitives -> new PrimitiveCollection
+  // DataSourceDisplay.groundPrimitives -> new PrimitiveCollection
+
+  // Scene.primitives contains DataSourceDisplay.primitives
+  // Scene.groundPrimitives contains DataSourceDisplay.groundPrimitives
   if (dataSourceCollection.length > 0) {
     scene.primitives.add(primitives);
     scene.groundPrimitives.add(groundPrimitives);
@@ -86,6 +101,7 @@ function DataSourceDisplay(options) {
   this._primitives = primitives;
   this._groundPrimitives = groundPrimitives;
 
+  // 已经存在于 DataSourceCollection 里的元素通过直接执行回调函数处理
   for (var i = 0, len = dataSourceCollection.length; i < len; i++) {
     this._onDataSourceAdded(dataSourceCollection, dataSourceCollection.get(i));
   }
@@ -94,6 +110,9 @@ function DataSourceDisplay(options) {
   this._onDataSourceAdded(undefined, defaultDataSource);
   this._defaultDataSource = defaultDataSource;
 
+  // 延迟处理
+  // DataSourceDisplay.primitives 添加到 Scene.primitives
+  // DataSourceDisplay.groundPrimitives 添加到 Scene.groundPrimitives
   var removeDefaultDataSourceListener;
   var removeDataSourceCollectionListener;
   if (!primitivesAdded) {
@@ -123,6 +142,9 @@ function DataSourceDisplay(options) {
 /**
  * Gets or sets the default function which creates an array of visualizers used for visualization.
  * By default, this function uses all standard visualizers.
+ *
+ * 获取或设置默认函数，这个函数创建一个用于可视化的可视化器数组。
+ * 默认情况下，这个函数使用所有标准可视化器。
  *
  * @type {DataSourceDisplay.VisualizersCallback}
  */
@@ -412,6 +434,11 @@ DataSourceDisplay.prototype.getBoundingSphere = function (
   return BoundingSphereState.DONE;
 };
 
+/**
+ * @event
+ *
+ * 向 DataSourceCollection 成功添加元素
+ */
 DataSourceDisplay.prototype._onDataSourceAdded = function (
   dataSourceCollection,
   dataSource
@@ -421,7 +448,10 @@ DataSourceDisplay.prototype._onDataSourceAdded = function (
   var displayPrimitives = this._primitives;
   var displayGroundPrimitives = this._groundPrimitives;
 
+  // Entity
+  // 创建新的 PrimitiveCollection 添加到 displayPrimitives
   var primitives = displayPrimitives.add(new PrimitiveCollection());
+  // 创建新的 OrderedGroundPrimitiveCollection 添加到 displayGroundPrimitives
   var groundPrimitives = displayGroundPrimitives.add(
     new OrderedGroundPrimitiveCollection()
   );

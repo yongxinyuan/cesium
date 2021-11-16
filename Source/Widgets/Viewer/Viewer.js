@@ -346,10 +346,16 @@ function enableVRUI(viewer, enabled) {
  * A base widget for building applications.  It composites all of the standard Cesium widgets into one reusable package.
  * The widget can always be extended by using mixins, which add functionality useful for a variety of applications.
  *
+ * 构建应用的基础部件。
+ * Viewer 混合所有标准 Cesium 部件到一个可复用的包。
+ * 这个部件总是可以使用 mixins 扩展，为应用程序添加有用的功能。
+ *
  * @alias Viewer
  * @constructor
  *
- * @param {Element|String} container The DOM element or ID that will contain the widget.
+ * @param {Element|String} container
+ * The DOM element or ID that will contain the widget.
+ * 将包含这个部件的 DOM 元素或者 ID。
  * @param {Viewer.ConstructorOptions} [options] Object describing initialization options
  *
  * @exception {DeveloperError} Element with id "container" does not exist in the document.
