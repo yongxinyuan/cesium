@@ -1666,6 +1666,9 @@ Viewer.prototype.forceResize = function () {
 /**
  * Renders the scene.  This function is called automatically
  * unless <code>useDefaultRenderLoop</code> is set to false;
+ *
+ * 渲染场景。
+ * 这个函数自动执行，除非 useDefaultRenderLoop 设置为 false。
  */
 Viewer.prototype.render = function () {
   this._cesiumWidget.render();

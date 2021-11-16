@@ -170,6 +170,9 @@ Tween.prototype.cancelTween = function () {
 /**
  * A collection of tweens for animating properties.  Commonly accessed using {@link Scene#tweens}.
  *
+ * 补间动画属性的集合。
+ * 通常使用 Scene.tweens 存取。
+ *
  * @alias TweenCollection
  * @constructor
  *
@@ -197,6 +200,10 @@ Object.defineProperties(TweenCollection.prototype, {
 /**
  * Creates a tween for animating between two sets of properties.  The tween starts animating at the next call to {@link TweenCollection#update}, which
  * is implicit when {@link Viewer} or {@link CesiumWidget} render the scene.
+ *
+ * 在两个属性之间创建补间动画。
+ * 补间动画在下次 Viewer 或 CesiumWidget 隐式渲染场景，执行 TweenCollection.update() 时开始。
+ *
  *
  * @param {Object} [options] Object with the following properties:
  * @param {Object} options.startObject An object with properties for initial values of the tween.  The properties of this object are changed during the tween's animation.
@@ -545,6 +552,9 @@ TweenCollection.prototype.get = function (index) {
 /**
  * Updates the tweens in the collection to be at the provide time.  When a tween finishes, it is removed
  * from the collection.
+ *
+ * 在指定的时间更新补间动画集合。
+ * 当一个阶段完成，将从集合中删除。
  *
  * @param {Number} [time=getTimestamp()] The time in seconds.  By default tweens are synced to the system clock.
  */

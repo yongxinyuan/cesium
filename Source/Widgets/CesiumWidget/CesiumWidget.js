@@ -779,13 +779,22 @@ CesiumWidget.prototype.resize = function () {
 /**
  * Renders the scene.  This function is called automatically
  * unless <code>useDefaultRenderLoop</code> is set to false;
+ *
+ * 渲染场景。
+ * 这个函数自动执行，除非 useDefaultRenderLoop 设置为 false。
  */
 CesiumWidget.prototype.render = function () {
+  // 只有在宽度和高度都不为 0 的时候，可以进行渲染
   if (this._canRender) {
+    // 初始化当前帧数据
     this._scene.initializeFrame();
+    // 推进时间
     var currentTime = this._clock.tick();
+    // 渲染当前时间
     this._scene.render(currentTime);
-  } else {
+  }
+  // 跳过当前渲染帧
+  else {
     this._clock.tick();
   }
 };

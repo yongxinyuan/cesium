@@ -10,6 +10,8 @@ import JulianDate from "./JulianDate.js";
 /**
  * A simple clock for keeping track of simulated time.
  *
+ * 一个保持跟踪模拟时间的简单的时钟。
+ *
  * @alias Clock
  * @constructor
  *
@@ -255,6 +257,10 @@ Object.defineProperties(Clock.prototype, {
  * Advances the clock from the current time based on the current configuration options.
  * tick should be called every frame, regardless of whether animation is taking place
  * or not.  To control animation, use the {@link Clock#shouldAnimate} property.
+ *
+ * 基于当前配置的时间推动时间。
+ * tick 应该在每一帧都执行，不管动画是否发生。
+ * 使用 Clock.shouldAnimate 属性控制动画。
  *
  * @returns {JulianDate} The new value of the {@link Clock#currentTime} property.
  */
