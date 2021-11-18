@@ -30,6 +30,8 @@ import PostProcessStageSampleMode from "./PostProcessStageSampleMode.js";
 /**
  * Contains functions for creating common post-process stages.
  *
+ * 包含创建通用后期处理阶段的函数。
+ *
  * @namespace PostProcessStageLibrary
  */
 var PostProcessStageLibrary = {};

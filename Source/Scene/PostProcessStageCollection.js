@@ -30,16 +30,28 @@ var stackScratch = [];
  * If the FXAA stage is enabled, it will execute after all other stages.
  * </p>
  *
+ * PostProcessStage 或者 PostProcessStageComposite 的集合。
+ * 每一个后期处理阶段的输入纹理都是场景渲染的纹理或者集合中上一个后期处理阶段渲染的纹理。
+ * 如果环境光遮蔽或者泛光阶段开启，他们将在所有其他阶段之前执行。
+ * 如果抗锯齿阶段开启，他们将在其他所有阶段之后执行。
+ *
+ * @property { boolean } _stagesRemoved 是否有删除的后期处理阶段
+ *
  * @alias PostProcessStageCollection
  * @constructor
  */
 function PostProcessStageCollection() {
+  // 抗锯齿后期处理
   var fxaa = PostProcessStageLibrary.createFXAAStage();
+  // 环境光遮蔽后期处理阶段
   var ao = PostProcessStageLibrary.createAmbientOcclusionStage();
+  // 泛光后期处理阶段
   var bloom = PostProcessStageLibrary.createBloomStage();
 
   // Auto-exposure is currently disabled because most shaders output a value in [0.0, 1.0].
   // Some shaders, such as the atmosphere and ground atmosphere, output values slightly over 1.0.
+  // 自动曝光现在禁用了，因为大多数着色器输出 0.0 到 1.0 之间的值。
+  // 有些着色器，比如大气层和地面大气层，输出值略大于 1.0。
   this._autoExposureEnabled = false;
   this._autoExposure = PostProcessStageLibrary.createAutoExposureStage();
   this._tonemapping = undefined;
@@ -60,6 +72,7 @@ function PostProcessStageCollection() {
   var stageNames = {};
   var stack = stackScratch;
   stack.push(fxaa, ao, bloom, tonemapping);
+  // 将内置后期处理阶段提取到 stageNames map 里
   while (stack.length > 0) {
     var stage = stack.pop();
     stageNames[stage.name] = stage;

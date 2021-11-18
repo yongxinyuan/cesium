@@ -47,6 +47,9 @@ Object.defineProperties(Cesium3DTileFeature.prototype, {
    * Gets or sets if the feature will be shown. This is set for all features
    * when a style's show is evaluated.
    *
+   * 获取或者设置这个特征是否显示。
+   * 当 style 的 show 属性是计算属性时，这将设置所有特征。
+   *
    * @memberof Cesium3DTileFeature.prototype
    *
    * @type {Boolean}

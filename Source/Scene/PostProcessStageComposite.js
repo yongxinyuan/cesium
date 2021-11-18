@@ -13,6 +13,12 @@ import destroyObject from "../Core/destroyObject.js";
  * or the output texture of the previous stage.
  * </p>
  *
+ * 一个 PostProcessStage 或者其他逻辑上一起执行的后期处理阶段组合的集合。
+ * 所有后期处理阶段按照数组的顺序执行。
+ * 输入纹理根据 inputPreviousStageTexture 变化。
+ * 如果 inputPreviousStageTexture 是 true，各个阶段的输入纹理是场景渲染的纹理或者之前的后期处理输出的纹理。
+ * 如果 inputPreviousStageTexture 是 false，这个组合中的每个阶段输入纹理都相同。
+ *
  * @alias PostProcessStageComposite
  * @constructor
  *

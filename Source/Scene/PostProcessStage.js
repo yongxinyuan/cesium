@@ -24,20 +24,92 @@ import PostProcessStageSampleMode from "./PostProcessStageSampleMode.js";
 /**
  * Runs a post-process stage on either the texture rendered by the scene or the output of a previous post-process stage.
  *
+ * 运行一个后期处理阶段，在场景渲染的纹理，或者上一个后期处理阶段输出的纹理。
+ *
  * @alias PostProcessStage
  * @constructor
  *
  * @param {Object} options An object with the following properties:
- * @param {String} options.fragmentShader The fragment shader to use. The default <code>sampler2D</code> uniforms are <code>colorTexture</code> and <code>depthTexture</code>. The color texture is the output of rendering the scene or the previous stage. The depth texture is the output from rendering the scene. The shader should contain one or both uniforms. There is also a <code>vec2</code> varying named <code>v_textureCoordinates</code> that can be used to sample the textures.
- * @param {Object} [options.uniforms] An object whose properties will be used to set the shaders uniforms. The properties can be constant values or a function. A constant value can also be a URI, data URI, or HTML element to use as a texture.
- * @param {Number} [options.textureScale=1.0] A number in the range (0.0, 1.0] used to scale the texture dimensions. A scale of 1.0 will render this post-process stage  to a texture the size of the viewport.
- * @param {Boolean} [options.forcePowerOfTwo=false] Whether or not to force the texture dimensions to be both equal powers of two. The power of two will be the next power of two of the minimum of the dimensions.
- * @param {PostProcessStageSampleMode} [options.sampleMode=PostProcessStageSampleMode.NEAREST] How to sample the input color texture.
- * @param {PixelFormat} [options.pixelFormat=PixelFormat.RGBA] The color pixel format of the output texture.
- * @param {PixelDatatype} [options.pixelDatatype=PixelDatatype.UNSIGNED_BYTE] The pixel data type of the output texture.
- * @param {Color} [options.clearColor=Color.BLACK] The color to clear the output texture to.
- * @param {BoundingRectangle} [options.scissorRectangle] The rectangle to use for the scissor test.
- * @param {String} [options.name=createGuid()] The unique name of this post-process stage for reference by other stages in a composite. If a name is not supplied, a GUID will be generated.
+ * @param {String} options.fragmentShader
+ * The fragment shader to use.
+ * The default <code>sampler2D</code> uniforms are <code>colorTexture</code> and <code>depthTexture</code>.
+ * The color texture is the output of rendering the scene or the previous stage.
+ * The depth texture is the output from rendering the scene.
+ * The shader should contain one or both uniforms.
+ * There is also a <code>vec2</code> varying named <code>v_textureCoordinates</code> that can be used to sample the textures.
+ *
+ * 默认 sampler2D 类型的 uniform 是 colorTexture 和 depthTexture。
+ * colorTexture 是颜色纹理。
+ * depthTexture 是深度纹理。
+ * 片元着色器应该至少包含一个。
+ * 也有一个 vec2 类型的 varying 是v_textureCoordinates 用来提取纹理。
+ *
+ * @param {Object} [options.uniforms]
+ * An object whose properties will be used to set the shaders uniforms.
+ * The properties can be constant values or a function.
+ * A constant value can also be a URI, data URI, or HTML element to use as a texture.
+ *
+ * 一个对象，属性将用来设置片元着色器的 uniform。
+ * 属性可以是常量值或一个函数。
+ * 常量值可以是 URI、 数据 URI、 或者 HTML 元素当作一个纹理。
+ *
+ * @param {Number} [options.textureScale=1.0]
+ * A number in the range (0.0, 1.0] used to scale the texture dimensions.
+ * A scale of 1.0 will render this post-process stage  to a texture the size of the viewport.
+ *
+ * 0.0 到 1.0 区间的数字，用来缩放纹理尺寸。
+ * 1.0 将后期处理阶段输出纹理按照视口尺寸渲染。
+ *
+ * @param {Boolean} [options.forcePowerOfTwo=false]
+ * Whether or not to force the texture dimensions to be both equal powers of two.
+ * The power of two will be the next power of two of the minimum of the dimensions.
+ *
+ * 是否强制纹理尺寸是 2 的次方。
+ * 2 的幂将是下一个尺寸最小的幂？？
+ *
+ * @param {PostProcessStageSampleMode} [options.sampleMode=PostProcessStageSampleMode.NEAREST]
+ * How to sample the input color texture.
+ *
+ * 如何提取输入颜色纹理？
+ *
+ * @param {PixelFormat} [options.pixelFormat=PixelFormat.RGBA]
+ * The color pixel format of the output texture.
+ *
+ * 输出纹理的颜色像素格式。
+ *
+ * @param {PixelDatatype} [options.pixelDatatype=PixelDatatype.UNSIGNED_BYTE]
+ * The pixel data type of the output texture.
+ *
+ * 输出颜色纹理的像素数据类型。
+ *
+ * @param {Color} [options.clearColor=Color.BLACK]
+ * The color to clear the output texture to.
+ *
+ * 输出纹理清除颜色缓冲区的颜色值。
+ *
+ * @param {BoundingRectangle} [options.scissorRectangle]
+ * The rectangle to use for the scissor test.
+ *
+ * 裁剪测试的矩形。
+ *
+ * @param {String} [options.name=createGuid()]
+ * The unique name of this post-process stage for reference by other stages in a composite.
+ * If a name is not supplied, a GUID will be generated.
+ *
+ * 唯一的后期处理阶段名称，用来在混合其他后期处理阶段时标记。
+ * 如果没有提供名称，将生成一个 GUID。
+ *
+ * @property { string } _fragmentShader 片源着色器代码
+ * @property { object } _uniforms 片元着色器接收的 uniform 变量对象
+ * @property { number } _textureScale 输出纹理的缩放比例
+ * @property { boolean } _forcePowerOfTwo 尺寸是否限制为 2 的幂
+ * @property { string } _sampleMode 纹理采样模式
+ * @property { string } _pixelFormat 像素格式，默认 rgba
+ * @property { string } _pixelDatatype 像素颜色值数据类型，无符号
+ * @property { string } _clearColor 输出纹理清除颜色缓冲区的颜色值
+ * @property { number } _depthTexture 输出纹理清除深度缓冲区的值
+ * @property { any } _idTexture 不知道干啥的
+ * @property { object } _uniformMap uniform 变量对象
  *
  * @exception {DeveloperError} options.textureScale must be greater than 0.0 and less than or equal to 1.0.
  * @exception {DeveloperError} options.pixelFormat must be a color format.
@@ -400,11 +472,18 @@ var depthTextureRegex = /uniform\s+sampler2D\s+depthTexture/g;
  * @private
  */
 PostProcessStage.prototype._isSupported = function (context) {
+  // 片元着色器没有用到深度纹理或者上下文有深度纹理？
+  // 主要检测是否支持深度纹理
   return !depthTextureRegex.test(this._fragmentShader) || context.depthTexture;
 };
 
+/**
+ * 获取 uniform 值的 getter 和 setter
+ */
 function getUniformValueGetterAndSetter(stage, uniforms, name) {
+  // 记录当前值
   var currentValue = uniforms[name];
+  // 如果当前值是字符串、canvas 元素、image 元素、ImageData，说明是脏数据
   if (
     typeof currentValue === "string" ||
     currentValue instanceof HTMLCanvasElement ||
@@ -475,31 +554,45 @@ function getUniformMapDimensionsFunction(uniformMap, name) {
   };
 }
 
+/**
+ * 创建 uniform 映射
+ */
 function createUniformMap(stage) {
+  // 如果已经有 uniform 映射，不需要重复处理
   if (defined(stage._uniformMap)) {
     return;
   }
 
+  // 遍历设置的 uniforms 对象的属性
+  //
   var uniformMap = {};
   var newUniforms = {};
   var uniforms = stage._uniforms;
   var actualUniforms = stage._actualUniforms;
   for (var name in uniforms) {
     if (uniforms.hasOwnProperty(name)) {
+      // 值不是函数的处理方式
       if (typeof uniforms[name] !== "function") {
+        // 记录包装的 uniform 获取函数
         uniformMap[name] = getUniformMapFunction(stage, name);
+        // 设置 getter 和 setter
         newUniforms[name] = getUniformValueGetterAndSetter(
           stage,
           uniforms,
           name
         );
-      } else {
+      }
+      // 值是函数
+      else {
         uniformMap[name] = uniforms[name];
         newUniforms[name] = uniforms[name];
       }
 
+      // 记录实际的值
       actualUniforms[name] = uniforms[name];
 
+      // 执行获取值
+      // 如果这个值是这些种类，记录尺寸
       var value = uniformMap[name]();
       if (
         typeof value === "string" ||
@@ -516,9 +609,11 @@ function createUniformMap(stage) {
     }
   }
 
+  // 重写 stage._unifroms 属性，变成响应式的
   stage._uniforms = {};
   Object.defineProperties(stage._uniforms, newUniforms);
 
+  // 组合一些内置的纹理
   stage._uniformMap = combine(uniformMap, {
     colorTexture: function () {
       return stage._colorTexture;
@@ -544,6 +639,9 @@ function createUniformMap(stage) {
   });
 }
 
+/**
+ * 创建绘制命令
+ */
 function createDrawCommand(stage, context) {
   if (
     defined(stage._command) &&
@@ -641,11 +739,15 @@ function createStageOutputTextureFunction(stage, name) {
   };
 }
 
+/**
+ * 创建 uniforms 对应的纹理
+ */
 function updateUniformTextures(stage, context) {
   var i;
   var texture;
   var name;
 
+  // 销毁要释放的纹理资源
   var texturesToRelease = stage._texturesToRelease;
   var length = texturesToRelease.length;
   for (i = 0; i < length; ++i) {
@@ -654,6 +756,7 @@ function updateUniformTextures(stage, context) {
   }
   texturesToRelease.length = 0;
 
+  // 创建要创建的纹理
   var texturesToCreate = stage._texturesToCreate;
   length = texturesToCreate.length;
   for (i = 0; i < length; ++i) {
@@ -667,6 +770,7 @@ function updateUniformTextures(stage, context) {
   }
   texturesToCreate.length = 0;
 
+  // 有变化的纹理
   var dirtyUniforms = stage._dirtyUniforms;
   if (dirtyUniforms.length === 0 && !defined(stage._texturePromise)) {
     stage._ready = true;
@@ -677,6 +781,7 @@ function updateUniformTextures(stage, context) {
     return;
   }
 
+  // 处理异步加载图片
   length = dirtyUniforms.length;
   var uniforms = stage._uniforms;
   var promises = [];
@@ -718,21 +823,31 @@ function updateUniformTextures(stage, context) {
   }
 }
 
+/**
+ * 释放资源
+ *
+ * @param {*} stage
+ * @returns
+ */
 function releaseResources(stage) {
+  // 销毁命令中的着色器程序
   if (defined(stage._command)) {
     stage._command.shaderProgram =
       stage._command.shaderProgram && stage._command.shaderProgram.destroy();
     stage._command = undefined;
   }
 
+  // 销毁选中的纹理
   stage._selectedIdTexture =
     stage._selectedIdTexture && stage._selectedIdTexture.destroy();
 
+  // 没有纹理缓存，不处理
   var textureCache = stage._textureCache;
   if (!defined(textureCache)) {
     return;
   }
 
+  // 销毁纹理
   var uniforms = stage._uniforms;
   var actualUniforms = stage._actualUniforms;
   for (var name in actualUniforms) {
@@ -747,9 +862,19 @@ function releaseResources(stage) {
   }
 }
 
+/**
+ * 选中的纹理是否发生变化
+ */
 function isSelectedTextureDirty(stage) {
+  // 记录选中瓦片数量
   var length = defined(stage._selected) ? stage._selected.length : 0;
+  // 父选中瓦片数量？
   var parentLength = defined(stage._parentSelected) ? stage._parentSelected : 0;
+  // 如何判断发生变化？
+  // 1. 选中的和选中副本不一致
+  // 2. 当前选中的数量和上一帧选中数量不同
+  // 3. 父元素选中的和选中副本不一致
+  // 4. 父元素当前选中数量和上一帧父元素选中数量不同
   var dirty =
     stage._selected !== stage._selectedShadow ||
     length !== stage._selectedLength;
@@ -758,6 +883,7 @@ function isSelectedTextureDirty(stage) {
     stage._parentSelected !== stage._parentSelectedShadow ||
     parentLength !== stage._parentSelectedLength;
 
+  // 组合选中的瓦片
   if (defined(stage._selected) && defined(stage._parentSelected)) {
     stage._combinedSelected = stage._selected.concat(stage._parentSelected);
   } else if (defined(stage._parentSelected)) {
@@ -766,11 +892,16 @@ function isSelectedTextureDirty(stage) {
     stage._combinedSelected = stage._selected;
   }
 
+  // 选中瓦片没有更新并且具有组合选中瓦片
   if (!dirty && defined(stage._combinedSelected)) {
+    // 如果没有定义组合瓦片副本，说明有更新？
     if (!defined(stage._combinedSelectedShadow)) {
       return true;
     }
 
+    // 组合选中瓦片长度
+    // 遍历组合选中瓦片和组合选中瓦片数组
+    // 如果有有不一致的说明有更新
     length = stage._combinedSelected.length;
     for (var i = 0; i < length; ++i) {
       if (stage._combinedSelected[i] !== stage._combinedSelectedShadow[i]) {
@@ -781,15 +912,22 @@ function isSelectedTextureDirty(stage) {
   return dirty;
 }
 
+/**
+ * 创建选中瓦片纹理
+ */
 function createSelectedTexture(stage, context) {
+  // 如果选中瓦片没有发生变化，不处理
   if (!stage._selectedDirty) {
     return;
   }
 
+  // 确认销毁 _selectedIdTexture
   stage._selectedIdTexture =
     stage._selectedIdTexture && stage._selectedIdTexture.destroy();
   stage._selectedIdTexture = undefined;
 
+  // 如果没有设置选中的组合瓦片
+  // 不处理
   var features = stage._combinedSelected;
   if (!defined(features)) {
     return;
@@ -798,6 +936,8 @@ function createSelectedTexture(stage, context) {
   var i;
   var feature;
 
+  // 遍历所有瓦片
+  // 根据 feature.pickIds 和 feature.pickId 统计所需瓦片的数量
   var textureLength = 0;
   var length = features.length;
   for (i = 0; i < length; ++i) {
@@ -809,14 +949,17 @@ function createSelectedTexture(stage, context) {
     }
   }
 
+  // 如果既没有选中的瓦片，也没有选中的id
   if (length === 0 || textureLength === 0) {
     // max pick id is reserved
+    // 保留最大数量选中的id
     var empty = new Uint8Array(4);
     empty[0] = 255;
     empty[1] = 255;
     empty[2] = 255;
     empty[3] = 255;
 
+    // 选中id纹理创建一个 1*1 白色的空白纹理
     stage._selectedIdTexture = new Texture({
       context: context,
       pixelFormat: PixelFormat.RGBA,
@@ -831,6 +974,7 @@ function createSelectedTexture(stage, context) {
     return;
   }
 
+  // 将选中的颜色按顺序收集到一个数组里
   var pickColor;
   var offset = 0;
   var ids = new Uint8Array(textureLength * 4);
@@ -857,6 +1001,7 @@ function createSelectedTexture(stage, context) {
     }
   }
 
+  // selected 创建一个宽度是纹理数量，高度是1的纹理中
   stage._selectedIdTexture = new Texture({
     context: context,
     pixelFormat: PixelFormat.RGBA,
@@ -872,25 +1017,48 @@ function createSelectedTexture(stage, context) {
 
 /**
  * A function that will be called before execute. Used to create WebGL resources and load any textures.
- * @param {Context} context The context.
- * @param {Boolean} useLogDepth Whether the scene uses a logarithmic depth buffer.
+ *
+ * 后期处理阶段执行之前执行的函数。
+ * 用于创建 WebGL 资源和加载任何纹理。
+ *
+ * @param {Context} context
+ * The context.
+ *
+ * 运行上下文。
+ *
+ * @param {Boolean} useLogDepth
+ * Whether the scene uses a logarithmic depth buffer.
+ *
+ * 场景是否使用对数深度缓冲区。
+ *
  * @private
  */
 PostProcessStage.prototype.update = function (context, useLogDepth) {
+  // 不使用的时候释放资源
+  // this.enabled = false
+  // this._enabled = true;
+  // 说明 enabled 状态从启用变成禁用
   if (this.enabled !== this._enabled && !this.enabled) {
     releaseResources(this);
   }
 
+  // 同步 enabled 状态
   this._enabled = this.enabled;
+
+  // 确定不使用，不处理
   if (!this._enabled) {
     return;
   }
 
+  // 记录是否使用对数深度缓冲区发生改变
   this._logDepthChanged = useLogDepth !== this._useLogDepth;
+  // 更新是否使用对数深度缓冲区
   this._useLogDepth = useLogDepth;
 
+  // 选中的纹理是否发生变化
   this._selectedDirty = isSelectedTextureDirty(this);
 
+  // 更新当前帧状态
   this._selectedShadow = this._selected;
   this._parentSelectedShadow = this._parentSelected;
   this._combinedSelectedShadow = this._combinedSelected;
@@ -899,10 +1067,15 @@ PostProcessStage.prototype.update = function (context, useLogDepth) {
     ? this._parentSelected.length
     : 0;
 
+  // 创建选中瓦片纹理
   createSelectedTexture(this, context);
+  // 创建 uniform 映射
   createUniformMap(this);
+  // 更新 uniform 对应的纹理
   updateUniformTextures(this, context);
+  // 创建绘制命令
   createDrawCommand(this, context);
+  // 创建取样器
   createSampler(this);
 
   this._selectedDirty = false;
@@ -993,6 +1166,10 @@ PostProcessStage.prototype.execute = function (
  * <code>isDestroyed</code> will result in a {@link DeveloperError} exception.
  * </p>
  *
+ * 如果这个对象已经销毁，返回 true，否则返回 false。
+ * 如果这个对象销毁了，就不应该使用它。
+ * 执行任何 isDestroyed() 以外的函数将导致异常。
+ *
  * @returns {Boolean} <code>true</code> if this object was destroyed; otherwise, <code>false</code>.
  *
  * @see PostProcessStage#destroy
@@ -1009,6 +1186,10 @@ PostProcessStage.prototype.isDestroyed = function () {
  * <code>isDestroyed</code> will result in a {@link DeveloperError} exception.  Therefore,
  * assign the return value (<code>undefined</code>) to the object as done in the example.
  * </p>
+ *
+ * 销毁这个对象持有的 WebGL 资源。
+ * 销毁一个对象允许确定性的释放 WebGL 资源。
+ * 取而代之，依赖垃圾收集器销毁这个对象。
  *
  * @exception {DeveloperError} This object was destroyed, i.e., destroy() was called.
  *
